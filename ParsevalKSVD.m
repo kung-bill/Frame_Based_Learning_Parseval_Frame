@@ -21,10 +21,10 @@ lam3 = zeros(m, n);
 for i = 1 : maxIter
     for inner_ind = 1 : 5
         %updae Psi (frame)
-        Psi = oneColumnPsi(Phi, Psi, X, Y, lam2, lam3, rho, t, 2, 10);
+        Psi = oneColumnPsi(Phi, Psi, X, Y, lam2, lam3, rho, t, 1, 2);
        
         % update Phi (dual frame)
-        Phi = oneColumnPhi(Phi, Psi, X, Y, lam2, lam3, rho, t, 2, 10);
+        Phi = oneColumnPhi(Phi, Psi, X, Y, lam2, lam3, rho, t, 1, 2);
         
         %update lambda2
         lam2 = lam2 + rho(2)*(Psi*(Phi)' - eye(m));
