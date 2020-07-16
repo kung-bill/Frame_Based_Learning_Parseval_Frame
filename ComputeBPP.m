@@ -39,7 +39,7 @@ for i = 1:size(absCoe,1)
 end
 
 ApproxCoe = CoeSign.*ApproxAbsCoe;
-Imhat = col2im( Psi*ApproxCoe + kron(Blk_col_mean, ones(64,1)),[8,8],[512,512],'distinct');
+Imhat = col2im( Psi*ApproxCoe + kron(Blk_col_mean, ones(64,1)),[8,8],[size(Im,1), size(Im,2)],'distinct');
 p = DoublePsnr(Imhat, ImD);
 e = entropy(ApproxCoe);
 end
