@@ -13,3 +13,11 @@ The Parseval K-SVD algorithm solve the dicitoinary $\psi$ and sparse coefficient
 
 The main function of Parseval K-SVD is written in the **ParsevalKSVD.m**.
 
+### Syntax
+
+```matlab
+[Psi, Phi, X, Record] = ParsevalKSVD(Y, Psi0, Phi0, X0, maxIter, t, rho, IsRecord, ShowDetail)
+```
+
+
+
