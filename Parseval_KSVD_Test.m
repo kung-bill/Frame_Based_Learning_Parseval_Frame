@@ -72,3 +72,58 @@ plot(Record.con1); xlabel('Iteration'); ylabel('$\| \psi \phi^\top - I \|_F^2$',
 
 figure;
 plot(Record.con2); xlabel('Iteration'); ylabel('$\| \psi - \phi \|_F^2$', 'Interpreter','latex');
+%% Part3: Image Compression
+% PSNR vesus bits per pixel (entropy) 
+
+Bits = 1:11;
+
+% The Parseval K-SVD case
+E1 = zeros(1, length(Bits)); %bit/per pixel
+P1 = zeros(1, length(Bits)); %PSNR
+DualPsi = pinv(Psi)';
+
+disp('Processing Parseval K-SVD Dictionary');
+for i = Bits
+    % Analysis frame is Psi
+    % Synthesis frame is canonical dual frame DualPsi 
+    [e, p] = ComputeBPP(i, DualPsi, Psi, Im); 
+
+    E1(i) = e;
+    P1(i) = p;
+    disp(['Computing  Bit ', num2str(i)]);
+end
+
+%bpp is not sorted, so we sorting the bpp.
+curve1 = zeros(2, length(Bits));
+[sortedE, r]= sort(E1); 
+curve1(1,:) = sortedE;
+curve1(2,:) = P1(r);
+
+% The K-SVD case
+Dual_D_svd = pinv(D_svd)';
+E2 = zeros(1, length(Bits)); %bit/per pixel
+P2 = zeros(1, length(Bits)); %PSNR
+disp('K-SVD Dictionary');
+for i = Bits
+    [e, p] = ComputeBPP(i, Dual_D_svd, Bits, Im);
+
+    E2(i) = e;
+    P2(i) = p;
+    disp(['Computing  Bit ', num2str(i)]);
+end
+
+curve2 = zeros(2, length(Bits));
+[sortedE, r]= sort(E2); 
+curve2(1,:) = sortedE;
+curve2(2,:) = P2(r);
+
+
+figure; 
+plot(curve1(1,:), curve1(2,:), 'LineStyle' , '-','Marker', '.', 'MarkerSize', 14);
+hold on
+plot(curve2(1,:), curve2(2,:), 'LineStyle' , '--', 'Marker', '.', 'MarkerSize', 14);
+hold off
+% ylim([20, 90]);
+xlabel('Bits per pixels');
+ylabel('PSNR(dB)');
+legend('Parseval K-SVD', 'K-SVD');
