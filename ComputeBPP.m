@@ -5,8 +5,8 @@ function [e, p] = ComputeBPP(bitNum, Psi, Phi, Im)
 ImD = double(Im); %convert img to double
 
 Blk = im2col(ImD,[8,8],'distinct');
-Blk_col_mean = mean(Blk); %Blk ���C�@�� Column �� Mean
-Y = Blk - kron(Blk_col_mean, ones(64,1)); %��h�C�@��Column �� Mean
+Blk_col_mean = mean(Blk); %extract mean of columns in Blk_col_me
+Y = Blk - kron(Blk_col_mean, ones(64,1)); %Y is zero mean
 
 Coe = Phi'*Y; % Mapping zero-mean image blocks to coefficients
 CoeSign = sign(Coe); % store  the Coe matrix sign information.
@@ -27,8 +27,8 @@ codingTableValueLen = length(codingTableValue);
 
 %start to approximate absCoe
 ApproxAbsCoe = zeros(size(absCoe)); 
-for i = 1:size(absCoe,1)
-    for j = 1:size(absCoe,2)
+for i = 1:size(absCoe,1) %for each row
+    for j = 1:size(absCoe,2) %for each column
         for k = 1:codingTableValueLen
             if(codingTableValue(codingTableValueLen-k+1) <= absCoe(i,j))
                 ApproxAbsCoe(i,j) = codingTableValue(codingTableValueLen-k+1);

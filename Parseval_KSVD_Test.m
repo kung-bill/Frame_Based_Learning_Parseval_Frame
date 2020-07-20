@@ -23,12 +23,12 @@ end;
 DCT=kron(DCT,DCT);
 
 param.K = 256;
-param.numIteration = 30;
+param.numIteration = 5;
 param.InitializationMethod =  'GivenMatrix';
 param.initialDictionary = DCT;
 param.displayProgress = 1;
 param.preserveDCAtom = 1;
-param.L = 64;
+param.L = 63;
 param.errorFlag = 0;
 param.errorGoal = 1.0e-8;
 [D_svd, output] = KSVD(Y, param);
@@ -41,11 +41,14 @@ imshow(KsvdIm); title('K-SVD'); %show D_svd element in image
 %% Part2: Learning the Parseval K-SVD
 
 Psi0 = D_svd;
-Phi0 = D_svd + randn(size(D_svd, 1), size(D_svd, 2));
+% Phi0 = D_svd + randn(size(D_svd, 1), size(D_svd, 2));
+% Phi0 = pinv(D_svd)';
+Phi0 = D_svd;
+
 X0 = X;
-maxIter = 50;
-t = 1.0e-8;
-rho = [0.1, 1.0e+5, 1.0e+5];
+maxIter = 100;
+t = 1.0e-10;
+rho = [0.1, 1.0e+8, 1.0e+8];
 IsRecord = true;
 ShowDetail = true;
 
@@ -75,19 +78,20 @@ plot(Record.con2); xlabel('Iteration'); ylabel('$\| \psi - \phi \|_F^2$', 'Inter
 %% Part3: Image Compression
 % PSNR vesus bits per pixel (entropy) 
 
-Bits = 1:11;
+Bits = 1:13;
 
 % The Parseval K-SVD case
 E1 = zeros(1, length(Bits)); %bit/per pixel
 P1 = zeros(1, length(Bits)); %PSNR
 DualPsi = pinv(Psi)';
+DualPhi = pinv(Phi)';
 
 disp('Processing Parseval K-SVD Dictionary');
 for i = Bits
     % Analysis frame is Psi
     % Synthesis frame is canonical dual frame DualPsi 
-    [e, p] = ComputeBPP(i, DualPsi, Psi, Im); 
-
+%     [e, p] = ComputeBPP(i, DualPsi, Psi, Im); 
+    [e, p] = ComputeBPP(i, Phi, DualPhi, Im); 
     E1(i) = e;
     P1(i) = p;
     disp(['Computing  Bit ', num2str(i)]);
@@ -105,7 +109,8 @@ E2 = zeros(1, length(Bits)); %bit/per pixel
 P2 = zeros(1, length(Bits)); %PSNR
 disp('K-SVD Dictionary');
 for i = Bits
-    [e, p] = ComputeBPP(i, Dual_D_svd, Bits, Im);
+%     [e, p] = ComputeBPP(i, Dual_D_svd, D_svd, Im);
+    [e, p] = ComputeBPP(i, D_svd, Dual_D_svd, Im);
 
     E2(i) = e;
     P2(i) = p;
