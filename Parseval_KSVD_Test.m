@@ -28,7 +28,7 @@ param.InitializationMethod =  'GivenMatrix';
 param.initialDictionary = DCT;
 param.displayProgress = 1;
 param.preserveDCAtom = 1;
-param.L = 63;
+param.L = 64;
 param.errorFlag = 0;
 param.errorGoal = 1.0e-8;
 [D_svd, output] = KSVD(Y, param);
@@ -46,9 +46,9 @@ Psi0 = D_svd;
 Phi0 = D_svd;
 
 X0 = X;
-maxIter = 100;
-t = 1.0e-10;
-rho = [0.1, 1.0e+8, 1.0e+8];
+maxIter = 80;
+t = 1.0e-8;
+rho = [0.1, 1.0e+6, 1.0e+6];
 IsRecord = true;
 ShowDetail = true;
 
@@ -90,8 +90,8 @@ disp('Processing Parseval K-SVD Dictionary');
 for i = Bits
     % Analysis frame is Psi
     % Synthesis frame is canonical dual frame DualPsi 
-%     [e, p] = ComputeBPP(i, DualPsi, Psi, Im); 
-    [e, p] = ComputeBPP(i, Phi, DualPhi, Im); 
+    [e, p] = ComputeBPP(i, DualPsi, Psi, Im); 
+%     [e, p] = ComputeBPP(i, Phi, DualPhi, Im); 
     E1(i) = e;
     P1(i) = p;
     disp(['Computing  Bit ', num2str(i)]);

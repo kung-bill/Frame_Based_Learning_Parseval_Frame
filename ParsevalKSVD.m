@@ -2,13 +2,6 @@ function [Psi, Phi, X, Record] = ParsevalKSVD(Y, Psi0, Phi0, X0, maxIter, t, rho
 %2019/6/4
 %author: B.C. Kung
 
-%For record
-augLag = zeros(1, maxIter);
-obj_rep = zeros(1, maxIter);
-obj_total = zeros(1, maxIter);
-con1 = zeros(1, maxIter);
-con2 = zeros(1, maxIter);
-
 %initial
 [m, n] = size(Psi0);
 Psi = Psi0;
@@ -17,6 +10,16 @@ X = X0;
 lam2 = zeros(m);
 lam3 = zeros(m, n);
 
+%For record
+if(IsRecord)
+    Psi_record = zeros(m, n, maxIter);
+    Phi_record = zeros(m, n, maxIter);
+    augLag = zeros(1, maxIter);
+    obj_rep = zeros(1, maxIter);
+    obj_total = zeros(1, maxIter);
+    con1 = zeros(1, maxIter);
+    con2 = zeros(1, maxIter);
+end
 
 for i = 1 : maxIter
     for inner_ind = 1 : 5
@@ -36,6 +39,8 @@ for i = 1 : maxIter
     X = upateX(X, Y, Psi, Phi, rho(1));
     
     if(IsRecord) %If need record the detail
+        Psi_record(:, :, i) = Psi;
+        Phi_record(:, :, i) = Phi;
         augLag(i) = rho(1)*norm(Y - Psi*X, 'fro')^2 + norm( (Phi')*Y - (Phi')*Psi*X, 'fro')^2 ...
         + trace((lam2')*(Psi*(Phi') - eye(m))) + (rho(2)/2)*norm(Psi*(Phi') - eye(m), 'fro')^2 ...
         + trace((lam3')*(Psi - Phi)) + (rho(3)/2)*norm(Psi - Phi, 'fro')^2;
