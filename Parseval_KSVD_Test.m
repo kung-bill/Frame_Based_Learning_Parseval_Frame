@@ -23,7 +23,7 @@ end;
 DCT=kron(DCT,DCT);
 
 param.K = 256;
-param.numIteration = 5;
+param.numIteration = 30;
 param.InitializationMethod =  'GivenMatrix';
 param.initialDictionary = DCT;
 param.displayProgress = 1;
@@ -46,9 +46,9 @@ Psi0 = D_svd;
 Phi0 = D_svd;
 
 X0 = X;
-maxIter = 80;
-t = 1.0e-8;
-rho = [0.1, 1.0e+6, 1.0e+6];
+maxIter = 50;
+t = 1.0e-9;
+rho = [0.1, 1.0e+8, 1.0e+8];
 IsRecord = true;
 ShowDetail = true;
 
@@ -78,11 +78,12 @@ plot(Record.con2); xlabel('Iteration'); ylabel('$\| \psi - \phi \|_F^2$', 'Inter
 %% Part3: Image Compression
 % PSNR vesus bits per pixel (entropy) 
 
-Bits = 1:13;
+Bits = 1:12;
 
 % The Parseval K-SVD case
 E1 = zeros(1, length(Bits)); %bit/per pixel
 P1 = zeros(1, length(Bits)); %PSNR
+
 DualPsi = pinv(Psi)';
 DualPhi = pinv(Phi)';
 
@@ -107,7 +108,7 @@ curve1(2,:) = P1(r);
 Dual_D_svd = pinv(D_svd)';
 E2 = zeros(1, length(Bits)); %bit/per pixel
 P2 = zeros(1, length(Bits)); %PSNR
-disp('K-SVD Dictionary');
+disp('Processing K-SVD Dictionary');
 for i = Bits
 %     [e, p] = ComputeBPP(i, Dual_D_svd, D_svd, Im);
     [e, p] = ComputeBPP(i, D_svd, Dual_D_svd, Im);
@@ -127,8 +128,8 @@ figure;
 plot(curve1(1,:), curve1(2,:), 'LineStyle' , '-','Marker', '.', 'MarkerSize', 14);
 hold on
 plot(curve2(1,:), curve2(2,:), 'LineStyle' , '--', 'Marker', '.', 'MarkerSize', 14);
-hold off
-% ylim([20, 90]);
+
+ylim([20, 90]);
 xlabel('Bits per pixels');
 ylabel('PSNR(dB)');
 legend('Parseval K-SVD', 'K-SVD');
