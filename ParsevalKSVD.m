@@ -22,7 +22,7 @@ if(IsRecord)
 end
 
 for i = 1 : maxIter
-    for inner_ind = 1 : 5
+    for inner_ind = 1 : 3
         %updae Psi (frame)
         Psi = oneColumnPsi(Phi, Psi, X, Y, lam2, lam3, rho, t, 1, 2);
        
@@ -56,6 +56,8 @@ for i = 1 : maxIter
         augLag(i), obj_rep(i), obj_total(i), con1(i), con2(i));
     end
 end
+Record.Psi_record = Psi_record;
+Record.Phi_record = Phi_record;
 Record.augLag = augLag;
 Record.obj_rep = obj_rep;
 Record.obj_total = obj_total;
