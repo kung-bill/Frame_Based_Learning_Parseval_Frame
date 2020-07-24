@@ -47,7 +47,7 @@ Phi0 = D_svd;
 
 X0 = X;
 maxIter = 50;
-t = 1.0e-9;
+t = 1.0e-10;
 rho = [0.1, 1.0e+8, 1.0e+8];
 IsRecord = true;
 ShowDetail = true;
