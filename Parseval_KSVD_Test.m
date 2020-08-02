@@ -46,9 +46,9 @@ Psi0 = D_svd;
 Phi0 = D_svd;
 
 X0 = X;
-maxIter = 50;
-t = 1.0e-10;
-rho = [0.1, 1.0e+8, 1.0e+8];
+maxIter = 20;
+t = 1.0e-9;
+rho = [0.1, 1.0e+5, 1.0e+5];
 IsRecord = true;
 ShowDetail = true;
 
@@ -75,10 +75,11 @@ plot(Record.con1); xlabel('Iteration'); ylabel('$\| \psi \phi^\top - I \|_F^2$',
 
 figure;
 plot(Record.con2); xlabel('Iteration'); ylabel('$\| \psi - \phi \|_F^2$', 'Interpreter','latex');
+
 %% Part3: Image Compression
 % PSNR vesus bits per pixel (entropy) 
 
-Bits = 1:12;
+Bits = 1:14;
 
 % The Parseval K-SVD case
 E1 = zeros(1, length(Bits)); %bit/per pixel
@@ -92,7 +93,6 @@ for i = Bits
     % Analysis frame is Psi
     % Synthesis frame is canonical dual frame DualPsi 
     [e, p] = ComputeBPP(i, DualPsi, Psi, Im); 
-%     [e, p] = ComputeBPP(i, Phi, DualPhi, Im); 
     E1(i) = e;
     P1(i) = p;
     disp(['Computing  Bit ', num2str(i)]);
@@ -110,7 +110,6 @@ E2 = zeros(1, length(Bits)); %bit/per pixel
 P2 = zeros(1, length(Bits)); %PSNR
 disp('Processing K-SVD Dictionary');
 for i = Bits
-%     [e, p] = ComputeBPP(i, Dual_D_svd, D_svd, Im);
     [e, p] = ComputeBPP(i, D_svd, Dual_D_svd, Im);
 
     E2(i) = e;
